@@ -1,0 +1,27 @@
+# Node
+node_modules/
+**/node_modules/
+
+# Env
+.env
+.env.*
+
+# Vite / build
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Python env
+venv/
+__pycache__/

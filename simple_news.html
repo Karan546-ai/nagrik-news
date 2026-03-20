@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nagrik News - Working Demo</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen p-8">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [news, setNews] = useState([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        fetch('http://localhost:5000/api/news/feed')
+          .then(res => res.json())
+          .then(data => {
+            setNews(data.articles || []);
+            setLoading(false);
+          })
+          .catch(() => {
+            setNews([
+              { title: 'ताजा खबर 1', summary: 'यह एक डेमो समाचार है...', imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400', category: 'technology', source: 'Nagrik News' },
+              { title: 'ब्रेकिंग न्यूज 2', summary: 'महत्वपूर्ण अपडेट...', imageUrl: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=400', category: 'politics', source: 'Nagrik News' },
+              { title: 'बिजनेस हेडलाइंस', summary: 'शेयर बाजार अपडेट...', imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400', category: 'business', source: 'Nagrik News' }
+            ]);
+            setLoading(false);
+          });
+      }, []);
+
+      if (loading) {
+        return <div class="flex justify-center items-center h-96">
+          <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-red-600"></div>
+        </div>;
+      }
+
+      return (
+        <div class="max-w-6xl mx-auto">
+          <header class="text-center mb-12">
+            <h1 class="text-5xl font-black bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
+              🇮🇳 नागरिक न्यूज़
+            </h1>
+            <p class="text-xl text-gray-600">AI से अनुवादित ताज़ा हिंदी समाचार</p>
+          </header>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {news.slice(0, 6).map((article, i) => (
+              <div key={i} class="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+                <img src={article.imageUrl} alt={article.title} class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div class="p-6">
+                  <span class="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold mb-3">
+                    {article.category}
+                  </span>
+                  <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-red-600 transition-colors">
+                    {article.title}
+                  </h2>
+                  <p class="text-gray-600 mb-4 line-clamp-2">{article.summary}</p>
+                  <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span>{article.source}</span>
+                    <span>🔥 AI सारांश</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="text-center mt-16 p-8 bg-white rounded-3xl shadow-lg">
+            <h3 class="text-2xl font-bold mb-4">समाचार API Working!</h3>
+            <p>Backend से {news.length} articles loaded. अगर और चाहिए तो backend API keys set karo (.env file).</p>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

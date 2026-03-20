@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: nagrik-news-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    
+    envVars:
+      - key: NODE_ENV
+        value: production
+      
+      - key: MONGODB_URI
+        fromDatabase:
+          name: nagrik-news
+          property: connectionString
+        
+      - key: JWT_SECRET
+        sync: false
+      
+      - key: EMAIL_USER
+        sync: false
+      
+      - key: EMAIL_PASS
+        sync: false
+      
+      - key: CORS_ORIGIN
+        sync: false
+
+databases:
+  - name: nagrik-news
+    databaseName: nagrik_news
+    user: nagrik_admin
+    region: oregon

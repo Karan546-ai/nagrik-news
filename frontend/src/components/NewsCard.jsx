@@ -11,7 +11,7 @@ export default function NewsCard({ article, featured = false }) {
       viewport={{ once: true }}
       className={`group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 ${featured ? 'md:flex md:col-span-2 shadow-md' : 'flex flex-col'}`}
     >
-      <div className={`relative overflow-hidden ${featured ? 'md:w-1/2' : 'w-full h-56'}`}>
+      <div className={`relative overflow-hidden ${featured ? 'w-full h-56 md:w-1/2 md:h-auto' : 'w-full h-56'}`}>
         {(article.imageUrl || '').match(/\.(mp4|webm|ogg)$/i) ? (
           <video 
             src={article.imageUrl} 
@@ -42,7 +42,7 @@ export default function NewsCard({ article, featured = false }) {
             <span className="flex items-center gap-1 text-green-600"><ShieldCheck className="w-3 h-3" /> AI प्रमाणित</span>
           </div>
           <Link to={`/article/${article._id || 1}`}>
-            <h2 className={`font-black text-gray-900 group-hover:text-nagrik-red transition-colors leading-tight ${featured ? 'text-3xl lg:text-4xl mb-4' : 'text-xl mb-3'}`}>
+            <h2 className={`font-black text-gray-900 group-hover:text-nagrik-red transition-colors leading-tight ${featured ? 'text-2xl sm:text-3xl md:text-4xl mb-4' : 'text-xl mb-3'}`}>
               {article.title}
             </h2>
           </Link>

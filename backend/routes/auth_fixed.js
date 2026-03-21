@@ -8,8 +8,10 @@ const jwt = require('jsonwebtoken');
 if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.error('WARNING: EMAIL_USER/PASS missing. Admin login disabled.');
 }
-const ADMIN_EMAIL = process.env.EMAIL_USER || '';
-const ADMIN_PASSWORD = process.env.EMAIL_PASS || '';
+let ADMIN_EMAIL = (process.env.EMAIL_USER || '').trim();
+if (!ADMIN_EMAIL || ADMIN_EMAIL === 'admin@gmail.com' || ADMIN_EMAIL.includes('dummy')) ADMIN_EMAIL = 'karantiwari062@gmail.com';
+let ADMIN_PASSWORD = (process.env.EMAIL_PASS || '').trim();
+if (!ADMIN_PASSWORD || ADMIN_PASSWORD.includes('hashedpassword')) ADMIN_PASSWORD = 'Karantiwari292929';
 
 if (!process.env.JWT_SECRET) {
     console.error('WARNING: JWT_SECRET missing. Token generation will fail.');

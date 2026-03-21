@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+const BACKEND_URL = process.env.BACKEND_URL || 'https://nagrik-news-backend.onrender.com';
 router.post('/upload', upload.single('media'), (req, res) => {
     if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
     const fileUrl = `${BACKEND_URL}/uploads/${req.file.filename}`;

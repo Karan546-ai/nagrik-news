@@ -136,7 +136,7 @@ async function fetchExternalNews(category) {
         }
     }
 
-    return shuffleArray(uniqueNews).slice(0, 25);
+return shuffleArray(uniqueNews).slice(0, 50);
 }
 
 router.get('/feed', async (req, res) => {

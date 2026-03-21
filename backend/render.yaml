@@ -11,9 +11,7 @@ services:
         value: production
       
       - key: MONGODB_URI
-        fromDatabase:
-          name: nagrik-news
-          property: connectionString
+        sync: false
         
       - key: JWT_SECRET
         sync: false
@@ -26,9 +24,3 @@ services:
       
       - key: CORS_ORIGIN
         sync: false
-
-databases:
-  - name: nagrik-news
-    databaseName: nagrik_news
-    user: nagrik_admin
-    region: oregon

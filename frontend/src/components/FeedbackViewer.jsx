@@ -263,7 +263,7 @@ export default function FeedbackViewer() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-900 rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700"
+              className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 max-w-2xl w-[95%] sm:w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700"
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white">फीडबैक विस्तार</h2>
@@ -291,7 +291,7 @@ export default function FeedbackViewer() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">श्रेणी</p>
                     <span className={`inline-block px-4 py-2 rounded-lg text-sm font-bold ${getCategoryColor(selectedFeedback.category)}`}>
@@ -316,7 +316,7 @@ export default function FeedbackViewer() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">स्थिति</p>
                     <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold ${getStatusColor(selectedFeedback.status)}`}>
@@ -337,8 +337,8 @@ export default function FeedbackViewer() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 sm:py-2 px-4 rounded-lg transition-colors">
                     उत्तर दें
                   </button>
                   <button className="flex-1 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold py-2 px-4 rounded-lg transition-colors">

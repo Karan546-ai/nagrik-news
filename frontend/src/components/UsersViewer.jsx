@@ -195,13 +195,13 @@ export default function UsersViewer() {
 
       {/* Users List */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
             <Users className="w-5 h-5 text-red-600 dark:text-red-500" />
             पंजीकृत उपयोगकर्ता ({filteredUsers.length})
           </h2>
           
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {['all', 'today', 'week', 'month'].map((time) => (
               <button
                 key={time}

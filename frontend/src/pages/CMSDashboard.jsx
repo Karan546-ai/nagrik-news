@@ -50,7 +50,7 @@ export default function CMSDashboard() {
   // Show Login Form
   if (!isAdmin) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white p-10 max-w-md mx-auto mt-20 rounded-3xl shadow-2xl border border-gray-100 flex flex-col items-center relative overflow-hidden">
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white p-6 sm:p-10 w-[92%] sm:w-full max-w-md mx-auto mt-10 sm:mt-20 rounded-3xl shadow-2xl border border-gray-100 flex flex-col items-center relative overflow-hidden">
         <div className="absolute top-0 w-full h-2 bg-gradient-to-r from-red-600 to-red-400"></div>
         
         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-6 ring-4 ring-red-50">
@@ -140,7 +140,7 @@ export default function CMSDashboard() {
   };;
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] border border-gray-100 dark:border-gray-700 min-h-[80vh]">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white dark:bg-gray-900 p-4 sm:p-8 rounded-2xl sm:rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] border border-gray-100 dark:border-gray-700 min-h-[80vh]">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-gray-100 dark:border-gray-700">
@@ -270,15 +270,15 @@ export default function CMSDashboard() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white p-10 rounded-3xl w-[600px] max-w-full shadow-2xl relative">
+          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white p-6 sm:p-10 rounded-2xl sm:rounded-3xl w-[600px] max-w-[95%] max-h-[90vh] overflow-y-auto shadow-2xl relative">
             <h2 className="text-2xl font-black mb-6 text-gray-900 border-b border-gray-100 pb-4">नई खबर का ड्राफ्ट</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <input type="text" placeholder="रोचक हेडलाइन (Headline)" required className="w-full text-lg font-bold border-gray-200 border rounded-xl px-5 py-3 focus:ring-2 focus:ring-nagrik-red focus:border-transparent outline-none transition-all" onChange={e => setFormData({...formData, title: e.target.value})} />
               <input type="text" placeholder="श्रेणी (जैसे- राजनीति, व्यापार, खेल)" required className="w-full font-semibold border-gray-200 border rounded-xl px-5 py-3 focus:ring-2 focus:ring-nagrik-red outline-none transition-all" onChange={e => setFormData({...formData, category: e.target.value})} />
               
-              <div className="flex gap-3 items-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                 <input type="text" placeholder="कवर इमेज या वीडियो का लिंक (या फाइल चुनें)" className="w-full font-semibold border-gray-200 border rounded-xl px-5 py-3 focus:ring-2 focus:ring-nagrik-red outline-none transition-all" value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} />
-                <label className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-3 rounded-xl font-bold cursor-pointer transition-colors whitespace-nowrap shadow-sm">
+                <label className="bg-gray-100 hover:bg-gray-200 text-gray-700 w-full sm:w-auto text-center px-5 py-3 rounded-xl font-bold cursor-pointer transition-colors whitespace-nowrap shadow-sm">
                   फाइल अपलोड
                   <input type="file" accept="image/*,video/*" className="hidden" onChange={async (e) => {
                     const file = e.target.files[0];
@@ -295,9 +295,9 @@ export default function CMSDashboard() {
               </div>
 
               <textarea placeholder="पूरी खबर यहाँ लिखें..." required className="w-full h-40 font-medium border-gray-200 border rounded-xl px-5 py-3 focus:ring-2 focus:ring-nagrik-red outline-none transition-all resize-none" onChange={e => setFormData({...formData, content: e.target.value})}></textarea>
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-colors">रद्द करें</button>
-                <button type="submit" className="px-6 py-2.5 rounded-xl font-bold text-white bg-nagrik-red hover:bg-[#c00024] shadow-md transition-colors flex items-center gap-2">पोस्ट करें और ऑटो-समरी बनाएँ <Zap className="w-4 h-4"/></button>
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-gray-100">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 sm:py-2.5 rounded-xl font-bold text-gray-500 bg-gray-50 sm:bg-transparent hover:bg-gray-100 transition-colors w-full sm:w-auto">रद्द करें</button>
+                <button type="submit" className="px-6 py-3 sm:py-2.5 rounded-xl font-bold text-white bg-nagrik-red hover:bg-[#c00024] shadow-md transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">पोस्ट करें <Zap className="w-4 h-4"/></button>
               </div>
             </form>
           </motion.div>

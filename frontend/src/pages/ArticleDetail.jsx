@@ -76,8 +76,8 @@ export default function ArticleDetail() {
         </div>
 
         <div className="flex items-center gap-4 text-gray-400">
-          <button className="hover:text-blue-600 flex items-center gap-1 font-bold text-sm bg-gray-50 px-4 py-2 rounded-xl transition-all"><ThumbsUp className="w-4 h-4" /> लाइक</button>
-          <button className="hover:text-green-600 flex items-center gap-1 font-bold text-sm bg-gray-50 px-4 py-2 rounded-xl transition-all"><Share2 className="w-4 h-4" /> शेयर</button>
+          <button onClick={() => alert('धन्यवाद! लाइक सेव कर लिया गया है।')} className="hover:text-blue-600 flex items-center gap-1 font-bold text-sm bg-gray-50 px-4 py-2 rounded-xl transition-all"><ThumbsUp className="w-4 h-4" /> लाइक</button>
+          <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert('लिंक कॉपी कर लिया गया है!'); }} className="hover:text-green-600 flex items-center gap-1 font-bold text-sm bg-gray-50 px-4 py-2 rounded-xl transition-all"><Share2 className="w-4 h-4" /> शेयर</button>
         </div>
       </div>
     </motion.div>

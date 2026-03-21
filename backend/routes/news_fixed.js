@@ -86,16 +86,15 @@ async function fetchExternalNews(category) {
         );
     }
 
-    // Public API
-    const publicCat = category === 'general' ? 'general' : category;
-    promises.push(axios.get(`https://saurav.tech/NewsAPI/top-headlines/category/${publicCat}/in.json`, { timeout: 4000 })
+    // Public API Fallback (Fresh News via Google News RSS)
+    const rssTopic = category.toLowerCase() === 'technology' ? 'TECHNOLOGY' : category.toLowerCase() === 'sports' ? 'SPORTS' : category.toLowerCase() === 'entertainment' ? 'ENTERTAINMENT' : category.toLowerCase() === 'business' ? 'BUSINESS' : 'NATION';
+    const rssUrl = `https://news.google.com/rss/headlines/section/topic/${rssTopic}?hl=hi&gl=IN&ceid=IN:hi`;
+    promises.push(axios.get(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`, { timeout: 4000 })
         .then(async (res) => {
-            if (res.data.articles) {
-                const titles = res.data.articles.map(a => a.title || '');
-                const translatedTitles = await translateToHindi(titles);
-                allNews.push(...res.data.articles.map((a, i) => ({
-                    title: translatedTitles[i] || a.title, summary: a.description, category,
-                    source: 'Public News', imageUrl: a.urlToImage, status: 'published'
+            if (res.data.items) {
+                allNews.push(...res.data.items.slice(0, 15).map((a, i) => ({
+                    title: a.title, summary: a.description.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...', category,
+                    source: a.source || 'Google News', imageUrl: a.thumbnail || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80', status: 'published'
                 })));
             }
         }).catch(() => {})

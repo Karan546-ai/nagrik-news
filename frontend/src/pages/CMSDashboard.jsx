@@ -143,7 +143,7 @@ export default function CMSDashboard() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] border border-gray-100 dark:border-gray-700 min-h-[80vh]">
       
       {/* Header */}
-      <div className="flex items-center justify-between mb-10 pb-6 border-b border-gray-100 dark:border-gray-700">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-gray-100 dark:border-gray-700">
         <div>
           <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-2">संपादक पैनल (Editor Dashboard)</h1>
           <p className="text-gray-500 dark:text-gray-400 font-medium">यहाँ से अपनी न्यूज़ पोस्ट करें, मैनेज करें और फीडबैक देखें।</p>
@@ -159,7 +159,7 @@ export default function CMSDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-8 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex flex-wrap gap-2 sm:gap-4 mb-8 border-b border-gray-200 dark:border-gray-700">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

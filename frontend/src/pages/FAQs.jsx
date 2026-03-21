@@ -189,7 +189,7 @@ export default function FAQs() {
           <p className="text-gray-700 dark:text-gray-300 mb-6">
             हम आपकी मदद के लिए तैयार हैं। अपना फीडबैक भेजें या हमसे संपर्क करें।
           </p>
-          <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg">
+          <button onClick={() => window.location.href = 'mailto:karantiwari062@gmail.com'} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg">
             हमसे संपर्क करें
           </button>
         </motion.div>

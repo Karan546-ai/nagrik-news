@@ -93,7 +93,7 @@ export default function Home() {
           {headingText}
         </h1>
         {!searchQuery && (
-          <button className="flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
+          <button onClick={() => alert('यह फ़ीचर अगले वर्ज़न में आ रहा है! (Coming soon)')} className="flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
             <Sparkles className="w-4 h-4" /> अपनी फीड चुनें
           </button>
         )}

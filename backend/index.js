@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth_fixed');
-const newsRoutes = require('./routes/news_fixed');
+const newsRoutes = require('./routes/news_fixed_fixed');
 const trendingRoutes = require('./routes/trending');
 
 const app = express();

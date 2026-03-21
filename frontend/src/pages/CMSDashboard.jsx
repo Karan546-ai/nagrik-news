@@ -207,7 +207,7 @@ export default function CMSDashboard() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
         >
-          <div className="overflow-x-auto rounded-2xl border border-gray-100 dark:border-gray-700">
+className="overflow-x-auto rounded-2xl border border-gray-100 dark:border-gray-700 -mx-4 sm:mx-0"
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider font-extrabold">
@@ -270,7 +270,7 @@ export default function CMSDashboard() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white p-6 sm:p-10 rounded-2xl sm:rounded-3xl w-[600px] max-w-[95%] max-h-[90vh] overflow-y-auto shadow-2xl relative">
+w-full max-w-md sm:max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative mx-4 sm:mx-0 z-50
             <h2 className="text-2xl font-black mb-6 text-gray-900 border-b border-gray-100 pb-4">नई खबर का ड्राफ्ट</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <input type="text" placeholder="रोचक हेडलाइन (Headline)" required className="w-full text-lg font-bold border-gray-200 border rounded-xl px-5 py-3 focus:ring-2 focus:ring-nagrik-red focus:border-transparent outline-none transition-all" onChange={e => setFormData({...formData, title: e.target.value})} />

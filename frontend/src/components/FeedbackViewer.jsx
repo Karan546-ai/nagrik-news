@@ -198,7 +198,7 @@ export default function FeedbackViewer() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: idx * 0.05 }}
                 onClick={() => setSelectedFeedback(item)}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg dark:hover:shadow-lg/20 transition-all cursor-pointer group"
+className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 hover:shadow-lg dark:hover:shadow-lg/20 transition-all cursor-pointer group -mx-4 sm:mx-0 mb-2 sm:mb-0 px-4 sm:px-0"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3 flex-1">

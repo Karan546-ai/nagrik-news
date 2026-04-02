@@ -222,7 +222,7 @@ export default function UsersViewer() {
         </div>
 
         {filteredUsers.length > 0 ? (
-className="overflow-x-auto -mx-4 sm:mx-0"
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr className="text-left text-sm font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">

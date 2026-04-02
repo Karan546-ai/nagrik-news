@@ -110,6 +110,9 @@ export default function ArticleDetail() {
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
 
+  const [extractedContent, setExtractedContent] = useState(null);
+  const [extracting, setExtracting] = useState(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     
@@ -160,6 +163,23 @@ export default function ArticleDetail() {
         setLoading(false);
       });
   }, [id, location.state]);
+
+  // Try to extract content if we have an original URL
+  useEffect(() => {
+    if (article?.originalUrl) {
+      setExtracting(true);
+      axios.get(`${API_BASE_URL}/api/news/extract?url=${encodeURIComponent(article.originalUrl)}`)
+        .then(res => {
+          if (res.data?.content) {
+            setExtractedContent(res.data.content);
+          }
+        })
+        .catch(err => {
+          console.log("Could not extract full content", err);
+        })
+        .finally(() => setExtracting(false));
+    }
+  }, [article?.originalUrl]);
 
   const fetchRelated = (category) => {
     axios.get(`${API_BASE_URL}/api/news/feed?category=${category || 'general'}`)
@@ -282,17 +302,38 @@ export default function ArticleDetail() {
           <div className="border-t border-gray-200 dark:border-gray-700 mb-10"></div>
 
           {/* Full Detailed Content */}
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            transition={{ delay: 0.3 }}
-            className="article-content prose prose-lg prose-slate dark:prose-invert max-w-none mb-12"
-          >
-            <div 
-              dangerouslySetInnerHTML={{ __html: detailedContent }} 
-              className="leading-loose text-gray-800 dark:text-gray-200 [&>h2]:text-gray-900 dark:[&>h2]:text-white [&>p]:mb-6 [&>p]:leading-loose"
-            />
-          </motion.div>
+          {extracting ? (
+            <div className="flex justify-center items-center py-12 mb-12">
+               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+               <span className="ml-4 text-gray-500 font-bold">पूरी ख़बर लोड हो रही है...</span>
+            </div>
+          ) : extractedContent ? (
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              className="article-content prose prose-lg prose-slate dark:prose-invert max-w-none mb-12"
+            >
+               <h2 className="text-2xl font-black text-gray-900 dark:text-white mt-8 mb-4 flex items-center gap-2">📋 विस्तृत रिपोर्ट</h2>
+               {extractedContent.split('\n\n').map((para, i) => (
+                  <p key={i} className="mb-6 leading-loose text-gray-800 dark:text-gray-200">{para}</p>
+               ))}
+               <div className="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 p-4 rounded-r-xl my-8">
+                <p className="text-amber-800 dark:text-amber-200 font-semibold italic">यह पूरी ख़बर स्रोत <a href={article.originalUrl} target="_blank" rel="noreferrer" className="underline">{article.source || 'मूल साइट'}</a> से ली गई है।</p>
+               </div>
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              transition={{ delay: 0.3 }}
+              className="article-content prose prose-lg prose-slate dark:prose-invert max-w-none mb-12"
+            >
+              <div 
+                dangerouslySetInnerHTML={{ __html: detailedContent }} 
+                className="leading-loose text-gray-800 dark:text-gray-200 [&>h2]:text-gray-900 dark:[&>h2]:text-white [&>p]:mb-6 [&>p]:leading-loose"
+              />
+            </motion.div>
+          )}
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-8">

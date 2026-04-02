@@ -108,6 +108,7 @@ async function fetchGoogleNewsRSS(category) {
                     summary: (item.description || '').replace(/<[^>]*>/g, '').slice(0, 200) + '...',
                     category,
                     source: item.author || 'Google News',
+                    originalUrl: item.link || '',
                     imageUrl: item.thumbnail || item.enclosure?.link || `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/800/400`,
                     status: 'published',
                     publishedAt: item.pubDate || new Date().toISOString()
@@ -144,6 +145,7 @@ async function fetchCurrentsAPI(category) {
                     summary: (item.description || '').slice(0, 200) + '...',
                     category,
                     source: item.author || 'Currents',
+                    originalUrl: item.url || '',
                     imageUrl: item.image || `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/800/400`,
                     status: 'published',
                     publishedAt: item.published || new Date().toISOString()
@@ -168,6 +170,7 @@ async function fetchTheNewsAPI(category) {
                 articles.push({
                     title: item.title, summary: item.description?.slice(0, 200) + '...',
                     category, source: item.source || 'TheNewsAPI',
+                    originalUrl: item.url || '',
                     imageUrl: item.image_url || `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/800/400`,
                     status: 'published'
                 });
@@ -191,6 +194,7 @@ async function fetchNewsAPI(category) {
                     articles.push({
                         title: a.title, summary: a.description || a.content?.slice(0, 200) || '',
                         category, source: a.source?.name || 'NewsAPI',
+                        originalUrl: a.url || '',
                         imageUrl: a.urlToImage || `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/800/400`,
                         status: 'published',
                         publishedAt: a.publishedAt
@@ -217,6 +221,7 @@ async function fetchGNews(category) {
                 articles.push({
                     title: a.title, summary: a.description || '',
                     category, source: a.source?.name || 'GNews',
+                    originalUrl: a.url || '',
                     imageUrl: a.image || `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/800/400`,
                     status: 'published',
                     publishedAt: a.publishedAt
@@ -242,6 +247,7 @@ async function fetchMediastack(category) {
                 articles.push({
                     title: a.title, summary: a.description || '',
                     category, source: a.source || 'Mediastack',
+                    originalUrl: a.url || '',
                     imageUrl: a.image || `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/800/400`,
                     status: 'published',
                     publishedAt: a.published_at
@@ -312,6 +318,33 @@ function getHindiFallback(category) {
     return shuffleArray(fallbacks[category] || fallbacks.general);
 }
 
+// 7. NewsData.io (if user has key)
+async function fetchNewsDataIO(category) {
+    if (!isValidApiKey(process.env.NEWSDATA_API_KEY)) return [];
+    const articles = [];
+    try {
+        const catMap = { general: 'top', technology: 'technology', business: 'business', sports: 'sports', entertainment: 'entertainment', health: 'health', science: 'science' };
+        const cat = catMap[category] || 'top';
+        const res = await fastAxios.get(`https://newsdata.io/api/1/news?apikey=${process.env.NEWSDATA_API_KEY}&country=in&language=hi&category=${cat}`);
+        if (res.data?.results?.length > 0) {
+            console.log(`✅ NewsData.io: ${res.data.results.length} articles`);
+            for (const a of res.data.results.slice(0, 15)) {
+                articles.push({
+                    title: a.title, summary: a.description || a.content?.slice(0, 200) || '',
+                    category, source: a.source_id || 'NewsData.io',
+                    originalUrl: a.link || '',
+                    imageUrl: a.image_url || `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/800/400`,
+                    status: 'published',
+                    publishedAt: a.pubDate
+                });
+            }
+        }
+    } catch (e) {
+        console.log('❌ NewsData.io failed:', e.response?.status || '', e.message);
+    }
+    return articles;
+}
+
 // ========================
 // MAIN: FETCH ALL NEWS (PARALLEL + FAST)
 // ========================
@@ -338,6 +371,7 @@ async function fetchExternalNews(category) {
         fetchGNews(category),
         fetchMediastack(category),
         fetchCurrentsAPI(category),
+        fetchNewsDataIO(category),
     ]);
 
     // Collect all results
@@ -388,22 +422,103 @@ router.get('/search', async (req, res) => {
                     { content: { $regex: q, $options: 'i' } }
                 ],
                 status: 'published'
-            }).sort({ createdAt: -1 }).limit(20);
+            }).sort({ createdAt: -1 }).limit(10);
         } catch(e) {}
 
-        // Also search in cached/fallback news
-        const allCats = ['general', 'technology', 'business', 'sports', 'entertainment', 'health', 'science'];
-        const allFallback = allCats.flatMap(cat => getHindiFallback(cat));
-        const matched = allFallback.filter(a => 
-            a.title?.toLowerCase().includes(q.toLowerCase()) ||
-            a.summary?.toLowerCase().includes(q.toLowerCase())
-        );
+        // Fetch fresh general news (this hits all sources and caches)
+        // Trending topics come from here, so it's guaranteed to be found
+        const recentNews = await fetchExternalNews('general');
+        
+        // Split query into keywords for robust matching
+        const keywords = q.toLowerCase().trim().split(/\s+/).filter(k => k.length > 2);
+        
+        const liveResults = recentNews.filter(a => {
+            const title = (a.title || '').toLowerCase();
+            const summary = (a.summary || '').toLowerCase();
+            
+            // Try exact match first
+            if (title.includes(q.toLowerCase()) || summary.includes(q.toLowerCase())) return true;
+            
+            // Try keyword match
+            if (keywords.length > 0) {
+               // Match if at least 2 keywords match, or 1 if query is short
+               const matchCount = keywords.filter(k => title.includes(k) || summary.includes(k)).length;
+               return matchCount >= Math.min(2, keywords.length);
+            }
+            return false;
+        });
 
-        const combined = shuffleArray([...dbResults, ...matched]).slice(0, 30);
-        res.json({ articles: combined });
+        // Combine and dedup
+        const combined = [...dbResults, ...liveResults];
+        const titleSet = new Set();
+        const uniqueNews = [];
+        for (const article of combined) {
+            if (!article.title) continue;
+            const key = normalizeTitle(article.title);
+            if (key && !titleSet.has(key)) {
+                titleSet.add(key);
+                uniqueNews.push(article);
+            }
+        }
+
+        res.json({ articles: uniqueNews.slice(0, 30) });
     } catch (error) {
         console.error('Search error:', error);
         res.json({ articles: [] });
+    }
+});
+
+// ========================
+// ARTICLE FULL CONTENT EXTRACTOR
+// ========================
+const cheerio = require('cheerio');
+
+router.get('/extract', async (req, res) => {
+    try {
+        let { url } = req.query;
+        if (!url) return res.status(400).json({ error: 'URL required' });
+
+        let response = await axios.get(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            timeout: 8000
+        });
+
+        // Handle Google News Redirects
+        if (url.includes('news.google.com')) {
+           const redirectMatch = response.data.match(/<meta[^>]+http-equiv="refresh"[^>]+content="[^"]*url=([^"]+)"/i) || 
+                                 response.data.match(/<a[^>]+href="([^"]+)"/i);
+           if (redirectMatch && redirectMatch[1]) {
+               let targetUrl = redirectMatch[1].replace(/&amp;/g, '&');
+               try {
+                   response = await axios.get(targetUrl, {
+                       headers: { 'User-Agent': 'Mozilla/5.0' },
+                       timeout: 8000
+                   });
+               } catch(e) {}
+           }
+        }
+
+        const $ = cheerio.load(response.data);
+        
+        // Remove scripts, styles, navs, headers, footers
+        $('script, style, nav, header, footer, aside, .sidebar, iframe, noscript').remove();
+
+        const paragraphs = [];
+        $('p').each((i, el) => {
+            const text = $(el).text().trim();
+            if (text.length > 50) paragraphs.push(text); // Only substantial paragraphs
+        });
+
+        // Deduplicate and join
+        const uniqueParagraphs = [...new Set(paragraphs)];
+        const fullContent = uniqueParagraphs.join('\n\n');
+
+        res.json({ content: fullContent.length > 200 ? fullContent : null });
+    } catch (error) {
+        console.error('Extraction error:', error.message);
+        res.status(500).json({ error: 'Failed to extract content' });
     }
 });
 
